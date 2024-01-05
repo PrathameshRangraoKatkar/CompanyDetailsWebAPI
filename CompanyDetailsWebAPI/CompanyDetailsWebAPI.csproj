@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.24" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="Z:\WebAPINewApp\CompanyDetailsWebAPI\CompanyDetailsWebAPI\Repository\Interface\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Models\UserRegModel.cs~RF2269e9f3.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Z:\WebAPINewApp\CompanyDetailsWebAPI\CompanyDetailsWebAPI\Repository\Interface\.editorconfig" />
+  </ItemGroup>
+
+</Project>
