@@ -8,11 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddLogging();
-
 builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped<ICommonDropDownRepository, CommonDropDownRepository>();
 builder.Services.AddScoped<IEmployeeRegRepository, EmployeeRegRepository>();
 builder.Services.AddScoped<IUserRegRepository, UserRegRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
 //builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 builder.Services.AddScoped<OrganizationRepository>();
@@ -43,3 +43,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+

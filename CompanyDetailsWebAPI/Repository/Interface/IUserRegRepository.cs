@@ -7,10 +7,19 @@ namespace CompanyDetailsWebAPI.Repository.Interface
     {
 
         Task<int> AddNewUser(UserRegModel userRegModel);
+
         //  Task<int> AddNewUser(UserRegModel userRegModel, MailSender mailSender);
         Task<int> UpdateUser(UserRegModel userRegModel);
-        Task<int> DeleteUser(int Id); 
-        Task<BaseResponseModel> GetAllUsers(int pageno, int pagesize,  string? Textsearch);
-        Task<BaseResponseModel> GetAllUsersClaimList(int pageno, int pagesize,  string? Textsearch, int SerarchByLeadStatusId, int SerarchByLeadSourceId);
+        Task<int> DeleteUser(int Id);
+        Task<BaseResponseModel> GetAllUsers(int pageno, int pagesize, string? Textsearch);
+        Task<BaseResponseModel> GetAllUsersClaimList(int pageno, int pagesize, string? Textsearch, int SerarchByLeadStatusId, int SerarchByLeadSourceId);
+
+
+        Task<BaseResponseModel1> GetAllUsersCount( );
+
+
+        // public Task<long> RegisterUser(UserRegModel userRegModel);
+
     }
+
 }

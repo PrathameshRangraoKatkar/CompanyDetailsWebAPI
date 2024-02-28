@@ -19,7 +19,7 @@ namespace CompanyDetailsWebAPI.Repository
         {
             _dapperContext = dapperContext;
 
-        }
+        }   
 
 
         public async Task<int> AddnewEmployee(EmployeeAddupdateModel employeeRegModel)

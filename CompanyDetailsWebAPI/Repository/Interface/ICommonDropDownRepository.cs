@@ -1,4 +1,5 @@
-﻿using CompanyDetailsWebAPI.Models;
+﻿using CompanyDetailsWebAPI.Common;
+using CompanyDetailsWebAPI.Models;
 using static CompanyDetailsWebAPI.Models.CommonDropDownModel;
 
 namespace CompanyDetailsWebAPI.Repository.Interface
@@ -18,6 +19,11 @@ namespace CompanyDetailsWebAPI.Repository.Interface
 
         Task<List<CommOrgModel>> GetAllOrganization();
         Task<List<UnitModel>> GetAllUnits();
+
+
+
+        Task<List<TaskTypeModel0>> GetAllTasks();
+        Task<List<TaskTypeModel>> GetAllTasks(int Id);
 
 
     }

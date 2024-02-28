@@ -67,7 +67,7 @@ namespace CompanyDetailsWebAPI.Models
 
     }
 
-    public class MailModel
+    public class MailModel1
     {
         public string Email { get; set; }
         public string UserName { get; set; }
@@ -76,4 +76,15 @@ namespace CompanyDetailsWebAPI.Models
         public string Link { get; set; }
 
     }
+    // UserRegistrationModel.cs
+    public class UserRegistrationModel
+    {
+        public string UserName { get; set; }
+        public string MobileNumber { get; set; }
+        public string PANCard { get; set; }
+        public string Email { get; set; }
+        public string Address { get; set; }
+        // Add other properties as per your table structure
+    }
+
 }

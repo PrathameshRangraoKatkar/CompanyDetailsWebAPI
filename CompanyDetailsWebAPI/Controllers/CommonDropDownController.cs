@@ -138,5 +138,37 @@ namespace CompanyDetailsWebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+
+
+        [HttpGet("GetAllTasks")]
+        public async Task<IActionResult> GetAllTasks()
+        {
+            try
+            {
+                var Tasks = await _repository.GetAllTasks();
+                return Ok(Tasks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
+        }
+
+
+        [HttpGet("GetAllTasks/{id}")]
+        public async Task<IActionResult> GetAllTasks(int id)
+        {
+            try
+            {
+                var tasks = await _repository.GetAllTasks(id);
+                return Ok(tasks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
     }
 }

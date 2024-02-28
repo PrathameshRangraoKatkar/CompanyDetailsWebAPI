@@ -1,4 +1,5 @@
-﻿using CompanyDetailsWebAPI.Models;
+﻿using CompanyDetailsWebAPI.Common;
+using CompanyDetailsWebAPI.Models;
 using CompanyDetailsWebAPI.Repository;
 using CompanyDetailsWebAPI.Repository.Interface;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +14,14 @@ namespace CompanyDetailsWebAPI.Controllers
     {
         private readonly IUserRegRepository _userRegRepository;
         private readonly ILogger<UserRegController> _logger;
-        public UserRegController(IUserRegRepository userRegRepository, ILogger<UserRegController> logger)
+
+      //  private readonly MailSender _mailSender;
+
+        public UserRegController(IUserRegRepository userRegRepository, ILogger<UserRegController> logger )
         {
             this._userRegRepository = userRegRepository;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+          //  _mailSender = mailSender;
         }
 
 
@@ -170,7 +175,19 @@ namespace CompanyDetailsWebAPI.Controllers
             }
         }
 
-
+        [HttpGet("count")]
+        public async Task<IActionResult> GetTotalUserCount()
+        {
+            try
+            {
+                var response = await _userRegRepository.GetAllUsersCount();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpGet("GetAllUsersClaimList")]
         public async Task<IActionResult> GetAllUsersClaimList(int pageNo, int pageSize, string? textSearch, int SerarchByLeadStatusId, int SerarchByLeadSourceId)
@@ -208,7 +225,7 @@ namespace CompanyDetailsWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Log error
+                
                 _logger.LogError(ex, "An error occurred in GetAllEmployee action.");
                 var returnMsg = string.Format(ex.Message);
                 _logger.LogInformation(returnMsg);
@@ -217,5 +234,22 @@ namespace CompanyDetailsWebAPI.Controllers
                 return Ok(responseDetails);
             }
         }
+
+
+
+        //[HttpPost("register")]
+        //public async Task<IActionResult> RegisterUser([FromBody] UserRegModel userRegModel)
+        //{
+        //    try
+        //    {
+        //        long result = await _userRegRepository.RegisterUser(userRegModel);
+        //        return Ok(result); 
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"An error occurred: {ex.Message}");
+        //    }
+        //}
+
     }
 }

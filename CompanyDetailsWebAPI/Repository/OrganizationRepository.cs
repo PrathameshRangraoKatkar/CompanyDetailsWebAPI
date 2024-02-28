@@ -29,7 +29,6 @@ namespace CompanyDetailsWebAPI.Repository
             using (var connection = _dapperContext.CreateConnection())
             {
 
-
                 if (organizationAddUpdateModel.Id == 0 || organizationAddUpdateModel.Id == null)
                 {
                     result = await connection.QuerySingleAsync<int>(query, organizationAddUpdateModel);
@@ -105,7 +104,6 @@ namespace CompanyDetailsWebAPI.Repository
                 return await connection.ExecuteAsync(query, new { Id = id });
             }
         }
-
 
 
 

@@ -5,6 +5,7 @@ using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static CompanyDetailsWebAPI.Models.CommonDropDownModel;
 
 namespace CompanyDetailsWebAPI.Repository
 {
@@ -97,5 +98,52 @@ namespace CompanyDetailsWebAPI.Repository
                 return result.AsList();
             }
         }
+
+        public async Task<List<CommonDropDownModel.TaskTypeModel0>>  GetAllTasks()
+        {
+            using (var connection = _dapperContext.CreateConnection())
+            {
+                var query = "SELECT Id, Name as TaskType ,IsDeleted FROM tbl_TaskType";
+                var result = await connection.QueryAsync<CommonDropDownModel.TaskTypeModel0>(query);
+                return result.AsList();
+            }
+        }
+
+        public async Task<List<CommonDropDownModel.TaskTypeModel>> GetAllTasks(int id)
+        {
+            using (var connection = _dapperContext.CreateConnection())
+            {
+                string query = "";
+
+                if (id == 1)
+                {
+                   
+                    query = @"SELECT tt.Id, tt.Name AS TaskType, t.TaskName, t.CustomerName, t.PlicyNumber, t.Assignee, t.Remark, t.TaskDate
+                      FROM tbl_Task t 
+                      INNER JOIN tbl_TaskType tt ON t.TaskTypeID = tt.Id 
+                      WHERE tt.Id = 1 ";
+                }
+                else if (id == 2)
+                {
+                    
+                    query = @"SELECT tt.Id, tt.Name AS TaskType, t.TaskName, t.CustomerName, t.PlicyNumber, t.Assignee, t.Remark, t.TaskDate, t.FollowUpDate 
+                      FROM tbl_Task t 
+                      INNER JOIN tbl_TaskType tt ON t.TaskTypeID = tt.Id 
+                      WHERE tt.Id = 2 ";
+                }
+                else
+                {
+                   
+                    return new List<CommonDropDownModel.TaskTypeModel>();
+                }
+
+                var result = await connection.QueryAsync<CommonDropDownModel.TaskTypeModel>(query, new { Id = id });
+                return result.AsList();
+            }
+        }
+
+
+
+
     }
 }

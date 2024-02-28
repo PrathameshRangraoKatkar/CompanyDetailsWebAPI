@@ -1,24 +1,28 @@
 ﻿
+using CompanyDetailsWebAPI.Common;
 using CompanyDetailsWebAPI.Context;
 using CompanyDetailsWebAPI.Models;
 using CompanyDetailsWebAPI.Repository.Interface;
 using Dapper;
+using Microsoft.Extensions.Configuration;
+using System.Data.Common;
 using System.Net;
 
 namespace CompanyDetailsWebAPI.Repository
-{
-    public class UserRegRepository : IUserRegRepository
+{   
+    public class UserRegRepository :  BaseAsyncRepository , IUserRegRepository
     {
+        IConfiguration _configuration;
         private readonly DapperContext _dapperContext;
-       
-        public UserRegRepository(DapperContext dapperContext)
+        // private readonly EmailSender _emailSender;
+        public UserRegRepository(IConfiguration _configuration, DapperContext dapperContext) : base(_configuration)
         {
-            _dapperContext = dapperContext;
-           
+           this._configuration = _configuration;
+            this._dapperContext = dapperContext;
         }
         public async Task<int> AddNewUser(UserRegModel userRegModel)
         {
-            int result = 0;
+            int result = 0; 
             var query = @"insert into tbl_UserReg 
                                (UserName,MobileNumber,PANCard,Email,Address,DateOfBirth,
                                ReferenceName,GenderId,LeadStatusId,LeadSourceId,OccupationId,
@@ -46,45 +50,45 @@ namespace CompanyDetailsWebAPI.Repository
         }
 
 
-        //public async Task<int> AddNewUser(UserRegModel userRegModel, MailSender mailSender)
+        //public async task<int> addnewuser(userregmodel userregmodel, mailsender mailsender)
         //{
         //    int result = 0;
-        //    var query = @"INSERT INTO tbl_UserReg 
-        //               (UserName,MobileNumber,PANCard,Email,Address,DateOfBirth,
-        //               ReferenceName,GenderId,LeadStatusId,LeadSourceId,OccupationId,
-        //               OccupationName,OccupationDescription,IsDeleted,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate)
-        //        VALUES (@UserName,@MobileNumber,@PANCard,@Email,@Address,@DateOfBirth,
-        //                @ReferenceName,@GenderId,@LeadStatusId,@LeadSourceId,@OccupationId,
-        //                @OccupationName,@OccupationDescription,0,@CreatedBy,@CreatedDate,@ModifiedBy,@ModifiedDate)
-        //                SELECT CAST(SCOPE_IDENTITY() as int)";
+        //    var query = @"insert into tbl_userreg 
+        //               (username,mobilenumber,pancard,email,address,dateofbirth,
+        //               referencename,genderid,leadstatusid,leadsourceid,occupationid,
+        //               occupationname,occupationdescription,isdeleted,createdby,createddate,modifiedby,modifieddate)
+        //        values (@username,@mobilenumber,@pancard,@email,@address,@dateofbirth,
+        //                @referencename,@genderid,@leadstatusid,@leadsourceid,@occupationid,
+        //                @occupationname,@occupationdescription,0,@createdby,@createddate,@modifiedby,@modifieddate)
+        //                select cast(scope_identity() as int)";
 
-        //    using (var connection = _dapperContext.CreateConnection())
+        //    using (var connection = _dappercontext.createconnection())
         //    {
-        //        var existingUserQuery = @"SELECT * FROM tbl_UserReg WHERE PANCard = @PANCard AND MobileNumber = @MobileNumber";
-        //        var existingUser = await connection.QueryAsync<UserRegModel>(existingUserQuery, userRegModel);
+        //        var existinguserquery = @"select * from tbl_userreg where pancard = @pancard and mobilenumber = @mobilenumber";
+        //        var existinguser = await connection.queryasync<userregmodel>(existinguserquery, userregmodel);
 
-        //        if (existingUser.Count() == 0)
+        //        if (existinguser.count() == 0)
         //        {
-        //            result = await connection.QuerySingleAsync<int>(query, userRegModel);
+        //            result = await connection.querysingleasync<int>(query, userregmodel);
 
         //            if (result > 0)
         //            {
-        //                // User registration successful, now send the registration email
-        //                var mailModel = new MailModel
+        //                // user registration successful, now send the registration email
+        //                var mailmodel = new mailmodel
         //                {
-        //                    Email = userRegModel.Email,
-        //                    UserName = userRegModel.UserName,
-        //                    Subject = "Registration Successful",
-        //                    Body = "Thank you for registering with us!",
-        //                    Link = "https://example.com" // Add the appropriate link if needed
+        //                    email = userregmodel.email,
+        //                    username = userregmodel.username,
+        //                    subject = "registration successful",
+        //                    body = "thank you for registering with us!",
+        //                    link = "https://example.com" // add the appropriate link if needed
         //                };
 
-        //                string emailSendingResult = mailSender.SendUserRegistrationMail(mailModel);
+        //                string emailsendingresult = mailsender.senduserregistrationmail(mailmodel);
 
-        //                if (emailSendingResult != "Email sent successfully.")
+        //                if (emailsendingresult != "email sent successfully.")
         //                {
-        //                    // Handle email sending failure
-        //                    // You might want to log the error or take appropriate action
+        //                    // handle email sending failure
+        //                    // you might want to log the error or take appropriate action
         //                }
         //            }
         //        }
@@ -112,16 +116,16 @@ namespace CompanyDetailsWebAPI.Repository
 
                 if (existingPANUser != null)
                 {
-                    return -2; 
+                    return -2;
                 }
                 else if (existingMobileNumberUser != null)
                 {
-                    return -3; 
+                    return -3;
                 }
 
                 //UserName,MobileNumber,PANCard,Email,Address,DateOfBirth,
-              //  ReferenceName,GenderId,LeadStatusId,LeadSourceId,OccupationId,
-                 //OccupationName,OccupationDescription,IsDeleted,CreatedBy,CreatedDate,ModifiedBy,ModifieDate
+                //  ReferenceName,GenderId,LeadStatusId,LeadSourceId,OccupationId,
+                //OccupationName,OccupationDescription,IsDeleted,CreatedBy,CreatedDate,ModifiedBy,ModifieDate
                 var updatequery = @"UPDATE tbl_UserReg
                 SET UserName = @UserName,
                     MobileNumber = @MobileNumber,
@@ -165,7 +169,7 @@ namespace CompanyDetailsWebAPI.Repository
 
         }
 
-        public async  Task<int> DeleteUser(int Id)
+        public async Task<int> DeleteUser(int Id)
         {
             int result = 0;
 
@@ -197,18 +201,18 @@ namespace CompanyDetailsWebAPI.Repository
             {
                 Textsearch = "";
             }
-            
+
             int OffsetVal = (pageno - 1) * pagesize;
 
             var query = @"
                        select Usr.Id,Usr.UserName,Usr.MobileNumber,Usr.PANCard,Usr.Email,Usr.Address,Usr.DateOfBirth,Usr.ReferenceName,
-		            Usr.GenderId,g.Gender,Usr.LeadStatusId,l.Name as StatusName,Usr.LeadSourceId,ls.Name as SourceName,Usr.OccupationId,Usr.OccupationName,
-		            Usr.OccupationDescription,Usr.IsDeleted
-		            from tbl_UserReg Usr
-		            LEFT JOIN tbl_Gender g ON Usr.GenderId = g.Id
-		            LEFT JOIN tbl_Occupation o ON Usr.OccupationId=o.Id
-		            LEFT JOIN  tbl_LeadSource ls ON Usr.LeadSourceId=ls.Id
-			        LEFT JOIN tbl_LeadStatus l ON Usr.LeadStatusId=l.ID
+              Usr.GenderId,g.Gender,Usr.LeadStatusId,l.Name as StatusName,Usr.LeadSourceId,ls.Name as SourceName,Usr.OccupationId,Usr.OccupationName,
+              Usr.OccupationDescription,Usr.IsDeleted
+              from tbl_UserReg Usr
+              LEFT JOIN tbl_Gender g ON Usr.GenderId = g.Id
+              LEFT JOIN tbl_Occupation o ON Usr.OccupationId=o.Id
+              LEFT JOIN  tbl_LeadSource ls ON Usr.LeadSourceId=ls.Id
+           LEFT JOIN tbl_LeadStatus l ON Usr.LeadStatusId=l.ID
                     WHERE Usr.IsDeleted = 0 
                         AND (UserName LIKE '%' + @Textsearch + '%') 
                     ORDER BY Usr.Id DESC
@@ -217,17 +221,17 @@ namespace CompanyDetailsWebAPI.Repository
                     SELECT @pageno AS PageNo, COUNT(Usr.Id) AS TotalPages
 
                      from tbl_UserReg Usr
-		            LEFT JOIN tbl_Gender g ON Usr.GenderId = g.Id
-		            LEFT JOIN tbl_Occupation o ON Usr.OccupationId=o.Id
-		            LEFT JOIN  tbl_LeadSource ls ON Usr.LeadSourceId=ls.Id
-			        LEFT JOIN tbl_LeadStatus l ON Usr.LeadStatusId=l.ID
+              LEFT JOIN tbl_Gender g ON Usr.GenderId = g.Id
+              LEFT JOIN tbl_Occupation o ON Usr.OccupationId=o.Id
+              LEFT JOIN  tbl_LeadSource ls ON Usr.LeadSourceId=ls.Id
+           LEFT JOIN tbl_LeadStatus l ON Usr.LeadStatusId=l.ID
                     WHERE Usr.IsDeleted = 0 
                         AND (UserName LIKE '%' + @Textsearch + '%')";
 
             List<UserRegModel> users = new List<UserRegModel>();
             using (var connection = _dapperContext.CreateConnection())
             {
-                connection.Open();
+
                 var result = await connection.QueryMultipleAsync(query, new
                 {
                     pageno = pageno,
@@ -252,15 +256,45 @@ namespace CompanyDetailsWebAPI.Repository
                 {
                     pagination1.TotalPages = PageCount + 1;
                 }
+
                 baseResponseModel.ResponseData1 = users;
                 baseResponseModel.ResponseData2 = pagination1;
                 return baseResponseModel;
             }
         }
 
+
+
+        public async Task<BaseResponseModel1> GetAllUsersCount( )
+        {
+            
+            BaseResponseModel1 baseResponseModel = new BaseResponseModel1();
+
+            int totalCount = 0;
+            int deletedCount = 0;
+
+
+
+            var countQuery = @"SELECT COUNT(*) FROM tbl_UserReg WHERE IsDeleted = 0;";
+            var deletedQuery = @"SELECT COUNT(*) FROM tbl_UserReg WHERE IsDeleted = 1;";
+
+
+            using (var connection = _dapperContext.CreateConnection())
+            {
+
+                totalCount = await connection.ExecuteScalarAsync<int>(countQuery);
+                deletedCount = await connection.ExecuteScalarAsync<int>(deletedQuery);
+
+                baseResponseModel.TotalCount = totalCount;
+                baseResponseModel.deletedCount= deletedCount;
+                return baseResponseModel;
+            }
+        }
+
+
         public async Task<BaseResponseModel> GetAllUsersClaimList(int pageno, int pagesize, string? Textsearch, int SerarchByLeadStatusId, int SerarchByLeadSourceId)
         {
-            PaginationModel pagination1 = new PaginationModel();                                         
+            PaginationModel pagination1 = new PaginationModel();
             BaseResponseModel baseResponseModel = new BaseResponseModel();
 
             if (pageno <= 0)
@@ -319,7 +353,7 @@ namespace CompanyDetailsWebAPI.Repository
                         AND ((Usr.UserName LIKE '%' + @Textsearch + '%' OR Usr.MobileNumber LIKE '%' + @Textsearch + '%'))
                         AND (Usr.LeadStatusId = @SerarchByLeadStatusId OR @SerarchByLeadStatusId = 0)
                         AND (Usr.LeadSourceId = @SerarchByLeadSourceId OR @SerarchByLeadSourceId = 0)  ";
-                  
+
 
             List<UserClaimListModel> users = new List<UserClaimListModel>();
             using (var connection = _dapperContext.CreateConnection())
@@ -355,6 +389,55 @@ namespace CompanyDetailsWebAPI.Repository
                 return baseResponseModel;
             }
         }
+
+        //public async Task<long> RegisterUser(UserRegModel userRegModel)
+        //{
+            
+        //    var query = @"insert into tbl_userreg 
+        //              (username, mobilenumber, pancard, email, address, dateofbirth,
+        //              referencename, genderid, leadstatusid, leadsourceid, occupationid,
+        //              occupationname, occupationdescription, isdeleted, createdby, createddate, modifiedby, modifieddate)
+        //         values (@username, @mobilenumber, @pancard, @email, @address, @dateofbirth,
+        //                 @referencename, @genderid, @leadstatusid, @leadsourceid, @occupationid,
+        //                 @occupationname, @occupationdescription, 0, @createdby, @createddate, @modifiedby, @modifieddate);
+        //                 @occupationname, @occupationdescription, 0, @createdby, @createddate, @modifiedby, @modifieddate);
+        //         select cast(scope_identity() as int)";
+
+        //    var queryToken = @"Insert into tblresettoken(userId,token,Expiry) values(@userId,@Token,@Expiry)";
+
+        //    using (var connection = _dapperContext.CreateConnection())
+        //    {
+        //        var existinguserquery = @"select * from tbl_userreg where pancard = @pancard and mobilenumber = @mobilenumber";
+        //        var existingemployee = await connection.QueryAsync<UserRegModel>(existinguserquery, userRegModel);
+
+
+        //        var result = await connection.QuerySingleAsync<int>(query, userRegModel);
+        //        if (result > 0)
+        //        {
+        //            MailModel model = new MailModel();
+        //            model.Email = userRegModel.Email;
+        //            model.UserName = userRegModel.UserName;
+        //            model.Subject = " User Registration Successfull ";
+        //            model.Body = "Mail Body";
+        //            string token = TokenHelper.GenerateToken(userRegModel.Email);
+
+        //            var resultToken = await connection.ExecuteAsync(queryToken,
+        //                new
+        //                {
+        //                    userId = result,
+        //                    token = token,
+        //                    expiry = DateTime.Now.AddHours(3)
+        //                });
+        //            string resetLink = $"";
+        //            model.Link = resetLink;
+
+        //            var res = MailSender.SendUserRegistratuionMail(model, _configuration);
+        //        }
+
+        //        return result;
+        //    }
+        //}
+    
 
     }
 }
